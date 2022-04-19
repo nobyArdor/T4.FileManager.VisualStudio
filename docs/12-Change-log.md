@@ -1,5 +1,14 @@
 # Change log
 
+## 3.0.1
+- Moved configs options to separate T4FileManagerOptions class
+- Add option TextFileEncoding to set output text file encoding
+- Add option LinkGeneratingFilesToTemplatePlaceholder to link generating files to template placeholder in solution
+- Add option LinkJsonFileToSolution to link info.json file in solution tree
+- Add option EmptyTemplatePlaceHolderExtention to set empty template placeholder file extention
+- Add option SetDefaultExtention - switch when need set default .txt extention to main output file
+- Add public method CreateResourceFile - to add binary embedded resouce file without cleanup, header block and other code routines and link the file to solution tree
+
 ## 3.0.0
 
 - Support for Visual Studio 2022

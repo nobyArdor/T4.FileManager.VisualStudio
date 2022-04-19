@@ -1,12 +1,18 @@
 # Start or create file
 
-Put this line into your text template (*.tt) where you want to start a new file:
+Put this line into your text template (*.tt) where you want to start a new text file:
 
 ```
 fileManager.StartNewFile(filename, projectname, subfolders, properties);
 ```
 
 All the content that follows in your template will go into that file (until you close it with the [Generate()](07-Proceed-to-generate-files.md) method. 
+
+Or put this line into your text template (*.tt) where you want to write a new binary file:
+
+```
+fileManager.CreateResourceFile(filename, content, projectname, subfolders, properties);
+```
 
 
 
@@ -18,6 +24,7 @@ All the content that follows in your template will go into that file (until you 
 | projectname | string               | The name of the project in which the file is created.        | "Test.Business"<br />*null* = project name of current project |
 | subfolders  | string               | The path of (sub) folders inside the project.                | Path.Combine("Example", "Tests")<br />*null* = root of project |
 | properties  | class FileProperties | Adding visual studio properties as example "CustomTool" or "BuildAction". | var fp= new FileProperties();<br />fp.CustomTool = "ResXFileCodeGenerator" |
+| content | byte\[\]] | Binary content for embedded file. | var content = MessagePackSerializer<br />.Serialize(new Sample1 <br />{<br /> Foo = 10,<br /> Bar = 20<br />});<br />required value, must NOT BE *null*|
 
 #### Properties
 

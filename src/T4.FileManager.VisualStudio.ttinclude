@@ -60,50 +60,109 @@
         /// <summary>
         /// Switch to write log of generation to main output file.
         /// </summary>
-        private bool isLogToMainOutputFileEnabled = false;
+        /// <value>Default value is false.</value>
+        private bool isLogToMainOutputFileEnabled;
 
         /// <summary>
         /// Allow overwriting of files if it has already been generated.
         /// </summary>
         /// <value>Default value is true.</value>
-        public bool CanOverwriteExistingFile = true;
+        private bool canOverwriteExistingFile;
 
         /// <summary>
         /// Automatic indentation of the code.
         /// </summary>
         /// <value>Default value is false.</value>
-        public bool IsAutoIndentEnabled = false;
+        private bool isAutoIndentEnabled;
 
         /// <summary>
         /// Enable Placeholder-Content for main output file to avoiding generation of empty .cs file 
         /// and ignoring of the output extension directive in .net core projects.
         /// </summary>
-        public bool IsNetCorePlaceholderContentEnabled = true;
+        /// <value>Default value is true.</value>
+        private bool isNetCorePlaceholderContentEnabled;
 
         /// <summary>
         /// Automatic indentation of the code with ReSharper.
         /// </summary>
-        public bool IsAutoCleanUpWithResharperEnabled = false;
+        /// <value>Default value is false.</value>
+        private bool isAutoCleanUpWithResharperEnabled;
+
+        /// <summary>
+        /// Encoding of text file.
+        /// </summary>
+        /// <value>Default value is UTF8 with BOM.</value>
+        private Encoding textFileEncoding;
+
+        /// <summary>
+        /// Link generating files to template placeholder in solution.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        private bool linkGeneratingFilesToTemplatePlaceholder;
+
+        /// <summary>
+        /// Link info.json file to solution.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        private bool linkJsonFileToSolution;
+
+        /// <summary>
+        /// Empty template placeholder extention
+        /// </summary>
+        /// <value>Default value is .txt4.</value>
+        private string emptyTemplatePlaceHolderExtention;
+
+        /// <summary>
+        /// Set default .txt extention to main output file
+        /// </summary>
+        /// <value>Default value is true</value>
+        private bool setDefaultExtention;
 
         /// <summary>
         /// Constructor for the instantiation of the FileManager.
         /// </summary>
         /// <param name="textTransformation">Code to generate as <see cref="GeneratedTextTransformation"/>.</param>
         public T4FileManager(GeneratedTextTransformation textTransformation)
-        : this(textTransformation.GenerationEnvironment, textTransformation.Host) {}
+        : this(textTransformation.GenerationEnvironment, textTransformation.Host, new T4FileManagerOptions()) {}
+
+        /// <summary>
+        /// Constructor for the instantiation of the FileManager.
+        /// </summary>
+        /// <param name="textTransformation">Code to generate as <see cref="GeneratedTextTransformation"/>.</param>
+        /// <param name="options">The generation options <see cref="T4FileManagerOptions"/>.</param>
+        public T4FileManager(GeneratedTextTransformation textTransformation,T4FileManagerOptions options)
+        : this(textTransformation.GenerationEnvironment, textTransformation.Host, options) {}
 
         /// <summary>
         /// Constructor for the instantiation of the FileManager.
         /// </summary>
         /// <param name="textTransformation">Code to generate as <see cref="StringBuilder"/>.</param>
         /// <param name="host">The interface for the host that transforms text template.</param>
-        public T4FileManager(StringBuilder textTransformation, ITextTemplatingEngineHost host)
+        /// <param name="options">The generation options <see cref="T4FileManagerOptions"/>.</param>
+        public T4FileManager(StringBuilder textTransformation, ITextTemplatingEngineHost host, T4FileManagerOptions options)
         {
             this.textTransformation = textTransformation;
             this.host = host;
 
+            if (options == null)
+                options = new T4FileManagerOptions();
+
+            isLogToMainOutputFileEnabled = options.IsLogToMainOutputFileEnabled;
+            canOverwriteExistingFile = options.CanOverwriteExistingFile;
+            isAutoIndentEnabled = options.IsAutoIndentEnabled;
+            isNetCorePlaceholderContentEnabled = options.IsNetCorePlaceholderContentEnabled;
+            isAutoCleanUpWithResharperEnabled = options.IsAutoCleanUpWithResharperEnabled;
+            textFileEncoding = options.TextFileEncoding;
+            linkGeneratingFilesToTemplatePlaceholder = options.LinkGeneratingFilesToTemplatePlaceholder;
+            linkJsonFileToSolution = options.LinkJsonFileToSolution;
+            emptyTemplatePlaceHolderExtention = options.EmptyTemplatePlaceHolderExtention;
+            setDefaultExtention = options.SetDefaultExtention;
+
             // prevent "error generating output" in ide, if output extension not set
-            this.host.SetFileExtension(".txt");
+            if (this.setDefaultExtention)
+            {
+                this.host.SetFileExtension(".txt");
+            }
 
             this.filesToGenerate = new List<FileToGenerate>();
             this.generatedInfo = new GeneratedInfo();
@@ -117,7 +176,17 @@
         /// <param name="textTransformation">Code to generate as <see cref="GeneratedTextTransformation"/>.</param>
         public static T4FileManager Create(GeneratedTextTransformation textTransformation)
         {
-            return new T4FileManager(textTransformation.GenerationEnvironment, textTransformation.Host);
+            return new T4FileManager(textTransformation);
+        }
+
+        /// <summary>
+        /// Create instance of the FileManager.
+        /// </summary>
+        /// <param name="textTransformation">Code to generate as <see cref="GeneratedTextTransformation"/>.</param>
+        /// <param name="options">The generation options <see cref="T4FileManagerOptions"/>.</param>
+        public static T4FileManager Create(GeneratedTextTransformation textTransformation, T4FileManagerOptions options)
+        {
+            return new T4FileManager(textTransformation, options);
         }
 
         /// <Summary>
@@ -138,7 +207,7 @@
         public T4FileManager DisableOverwriteExistingFile()
         {
             this.logger.Information("CanOverwriteExistingFile is disabled (false)");
-            this.CanOverwriteExistingFile = false;
+            this.canOverwriteExistingFile = false;
             return this;
         }
 
@@ -148,7 +217,7 @@
         public T4FileManager EnableCleanUpWithResharper()
         {
             this.logger.Information("IsAutoCleanUpWithResharperEnabled is enabled (true)");
-            this.IsAutoCleanUpWithResharperEnabled = true;
+            this.isAutoCleanUpWithResharperEnabled = true;
             return this;
         }
 
@@ -158,7 +227,7 @@
         public T4FileManager EnableAutoIndent()
         {
             this.logger.Information("IsAutoIndentEnabled is enabled (true) / VS Format Document Shortcut");
-            this.IsAutoIndentEnabled = true;
+            this.isAutoIndentEnabled = true;
             return this;
         }
 
@@ -253,6 +322,7 @@
             CreateNewFile(filename, project, path, null);
         }
 
+
         /// <summary>
         ///  A new file will be started. The generated code that was before this method is added to the last file.
         /// </summary>
@@ -269,12 +339,12 @@
                 FinishFile();
             }
 
-            var formattedPath = path == null ? null : path.Replace("/", @"\");
+            var formattedPath = path == null ? null : path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             this.logger.Information("Formatted path set {0}", formattedPath);
 
             properties = properties ?? new FileProperties();
 
-            this.currentFileToGenerate = new FileToGenerate
+            this.currentFileToGenerate = new TextFileToGenerate
             {
                 Filename = filename,
                 Path = formattedPath,
@@ -285,6 +355,60 @@
             this.textTransformation.Clear();
             this.logger.Information("End CreateNewFile {0}", filename);
         }
+
+        /// <summary>
+        ///  A new binary file will be created. The binary will be placed in file.
+        /// </summary>
+        /// <param name="filename">The file name for the generated file.</param>
+        /// <param name="filename"> The binary content to save.</param>
+        /// <param name="project">Project name where the file is generated.</param>
+        /// <param name="path">Subfolder within the project where the file is generated.</param>
+
+        public void CreateResourceFile(string filename, byte[] content, string project, string path)
+        {
+            CreateResourceFile(filename, content, project, path, null);
+        }
+
+        /// <summary>
+        ///  A new binary file will be created. The binary will be placed in file.
+        /// </summary>
+        /// <param name="filename">The file name for the generated file.</param>
+        /// <param name="filename"> The binary content to save.</param>
+        /// <param name="project">Project name where the file is generated.</param>
+        /// <param name="path">Subfolder within the project where the file is generated.</param>
+        /// <param name="properties">Settings that can be defined for the generated file.</param>
+
+        public void CreateResourceFile(string filename, byte[] content, string project, string path, FileProperties properties)
+	    {
+		    this.logger.Information("Begin CreateResourceFile {0}", filename);
+            if (this.currentFileToGenerate != null && !string.IsNullOrEmpty(this.currentFileToGenerate.Filename))
+            {
+                this.logger.Information("Finish previous file");
+                FinishFile();
+            }
+
+            var formattedPath = path == null ? null : path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            this.logger.Information("Formatted path set {0}", formattedPath);
+
+            properties = properties ?? new FileProperties() 
+            {
+                CustomTool = "",
+                BuildAction = BuildAction.EmbeddedResource,
+                CopyToOutputDirectory = CopyToOutputDirectory.DoNotCopy
+            };
+
+            this.currentFileToGenerate = new BinaryFileToGenerate
+            {
+                Filename = filename,
+                Path = formattedPath,
+                Properties = properties.ToDictionary(),
+                Project = project,
+                BinaryContent = content
+            };
+
+            this.textTransformation.Clear();
+            this.logger.Information("End CreateResourceFile {0}", filename);
+	  }
 
         /// <summary>
         /// The generated file is finished.
@@ -316,14 +440,16 @@
                 header = this.headerBlock.Replace("$filename$", this.currentFileToGenerate.Filename);
             }
 
-            this.currentFileToGenerate.Content = this.textTransformation.Insert(0, header).ToString();
+            if (this.currentFileToGenerate is TextFileToGenerate textFile)
+                textFile.Content = this.textTransformation.Insert(0, header).ToString();
+            
             this.filesToGenerate.Add(this.currentFileToGenerate);
             this.logger.Information("File {0} added to list", this.currentFileToGenerate.Filename);
 
             this.logger.Information("File content ({0} chars) removed from main text transformation", this.textTransformation.Length);
             this.textTransformation.Remove(0, this.textTransformation.Length);
 
-            this.currentFileToGenerate = new FileToGenerate();
+            this.currentFileToGenerate = new TextFileToGenerate();
             this.logger.Information("End FinishFile");
         }
 
@@ -350,7 +476,7 @@
                 FinishFile();
             }
 
-            var templateFile = this.host.TemplateFile.Replace(".tt", ".info.json");
+            var templateFile = Path.ChangeExtension(this.host.TemplateFile, ".info.json");
             GeneratedInfo filesInfoFromPreviousRun = null;
 
             if (File.Exists(templateFile))
@@ -364,7 +490,16 @@
 
             foreach (var fileToGenerate in this.filesToGenerate)
             {
-                this.GenerateNewFile(fileToGenerate);
+                
+                if (fileToGenerate is BinaryFileToGenerate binaryFile)
+                    this.GenerateNewFile(binaryFile);
+
+                else if (fileToGenerate is TextFileToGenerate textFile)
+                    this.GenerateNewFile(textFile);
+
+                else 
+                    throw new ArgumentOutOfRangeException("FileToGenerate has unexpected type");
+
                 this.GenerateNewFileForSolution(fileToGenerate);
             }
 
@@ -373,9 +508,17 @@
 
             this.generatedInfo.FilesToGenerate = this.filesToGenerate;
 
-            File.WriteAllText(templateFile, JsonConvert.SerializeObject(this.generatedInfo, Formatting.Indented));
+            File.WriteAllText(templateFile, JsonConvert.SerializeObject(this.generatedInfo, Formatting.Indented), Encoding.UTF8);
+
             this.logger.Information("New info file {0} created", Path.GetFileName(templateFile));
             this.logger.Information("End Generate");
+
+            if (this.linkJsonFileToSolution)
+            {
+                var originaleTemplateItem = this.dte.Solution.FindProjectItem(this.host.TemplateFile);
+                originaleTemplateItem.ProjectItems.AddFromFile(templateFile);
+                this.logger.Information("Info file {0} linked to solution item", Path.GetFileName(templateFile));
+            }
             
             stopWatch.Stop();
             this.logger.Information("Duration: {0:h\\:mm\\:ss\\.fffff}", stopWatch.Elapsed);
@@ -385,7 +528,7 @@
                 this.textTransformation.Append(this.logger.Log);
             }
 			
-            if (this.IsNetCorePlaceholderContentEnabled)
+            if (this.isNetCorePlaceholderContentEnabled)
             {
                 this.textTransformation.Append(".NET Core placeholder content to avoid ignoring the output extension directive");
             }
@@ -395,23 +538,43 @@
         /// Physical generation of the file.
         /// </summary>
         /// <param name="fileToGenerate">File information.</param>
-        private void GenerateNewFile(FileToGenerate fileToGenerate)
+        private void GenerateNewFile(TextFileToGenerate textFileToGenerate)
         {
-            Directory.CreateDirectory(fileToGenerate.AbsolutePath);
+            Directory.CreateDirectory(textFileToGenerate.AbsolutePath);
 
-            var filePath = Path.Combine(fileToGenerate.AbsolutePath, fileToGenerate.Filename);
+            var filePath = Path.Combine(textFileToGenerate.AbsolutePath, textFileToGenerate.Filename);
 
-            if (IsAutoIndentEnabled || IsAutoCleanUpWithResharperEnabled)
+            if (this.isAutoIndentEnabled || this.isAutoCleanUpWithResharperEnabled)
             {
-                fileToGenerate.Content = fileToGenerate.Content.Insert(0, " ");
+                textFileToGenerate.Content = textFileToGenerate.Content.Insert(0, " ");
             }
 
-            var canOverwriteExistingFile = CanOverwriteExistingFileByFile(fileToGenerate);
+            var canOverwriteExistingFile = CanOverwriteExistingFileByFile(textFileToGenerate);
 
-            if ((canOverwriteExistingFile && this.CanOverwriteExistingFile) || !File.Exists(filePath))
+            if ((canOverwriteExistingFile && this.canOverwriteExistingFile) || !File.Exists(filePath))
             {
-                File.WriteAllText(Path.Combine(fileToGenerate.AbsolutePath, fileToGenerate.Filename), fileToGenerate.Content);
+                File.WriteAllText(Path.Combine(textFileToGenerate.AbsolutePath, textFileToGenerate.Filename), textFileToGenerate.Content, textFileEncoding);
+                this.logger.Information("Text file {0} written", textFileToGenerate.Filename);
             }
+        }
+
+        /// <summary>
+        /// Physical generation of the file.
+        /// </summary>
+        /// <param name="fileToGenerate">File information.</param>
+        private void GenerateNewFile(BinaryFileToGenerate binaryFileToGenerate)
+        {
+            Directory.CreateDirectory(binaryFileToGenerate.AbsolutePath);
+
+            var filePath = Path.Combine(binaryFileToGenerate.AbsolutePath, binaryFileToGenerate.Filename);
+
+            var canOverwriteExistingFile = CanOverwriteExistingFileByFile(binaryFileToGenerate);
+
+            if ((canOverwriteExistingFile && this.canOverwriteExistingFile) || !File.Exists(filePath))
+            {
+                File.WriteAllBytes(Path.Combine(binaryFileToGenerate.AbsolutePath, binaryFileToGenerate.Filename), binaryFileToGenerate.BinaryContent);
+            }
+            this.logger.Information("Binary file {0} written", binaryFileToGenerate.Filename);
         }
 
         /// <summary>
@@ -450,7 +613,7 @@
 
             var canOverwriteExistingFile = CanOverwriteExistingFileByFile(fileToGenerate);
 
-            if (fileToGenerate.Properties != null && (canOverwriteExistingFile && this.CanOverwriteExistingFile) || !exists)
+            if (fileToGenerate.Properties != null && (canOverwriteExistingFile && this.canOverwriteExistingFile) || !exists)
             {
                 if (fileToGenerate.Properties != null)
                 {
@@ -466,13 +629,13 @@
                     }
                 }
 
-                if (IsAutoIndentEnabled)
+                if (this.isAutoIndentEnabled)
                 {
                     this.logger.Information("AutoIndent is enabled for file");
                     this.FormatProjectItem(fileProjectItem);
                 }
 
-                if (IsAutoCleanUpWithResharperEnabled)
+                if (this.isAutoCleanUpWithResharperEnabled)
                 {
                     this.logger.Information("AutoCleanup with resharper is enabled for file");
                     this.FormatProjectItemWithResharper(fileProjectItem);
@@ -489,9 +652,9 @@
         {
             this.logger.Information("Start DeleteExistingFiles");
 
-            if (filesInfoFromPreviousRun == null || filesInfoFromPreviousRun.HasContent() == false || this.CanOverwriteExistingFile == false)
+            if (filesInfoFromPreviousRun == null || filesInfoFromPreviousRun.HasContent() == false || this.canOverwriteExistingFile == false)
             {
-                this.logger.Information("Cancel DeleteExistingFiles (no files from previous run and CanOverwriteExistingFile: {0}", this.CanOverwriteExistingFile);
+                this.logger.Information("Cancel DeleteExistingFiles (no files from previous run and CanOverwriteExistingFile: {0}", this.canOverwriteExistingFile);
                 return;
             }
 
@@ -764,23 +927,29 @@
         /// <param name="fileName">Filename with extension.</param>
         private void AddMissingFileToProject(string projectName, string absolutePath, string fileName)
         {
+            
             if (string.IsNullOrEmpty(projectName))
             {
-                var projItem = this.dte.Solution.FindProjectItem(this.host.TemplateFile);
-                var prj = projItem.ContainingProject;
-                projectName = prj.Name;
+                var originaleTemplateItem = this.dte.Solution.FindProjectItem(this.host.TemplateFile);
+                var templatePrj = originaleTemplateItem.ContainingProject;
+                projectName = templatePrj.Name;
             }
 
             var projectItems = this.FindProjectByName(projectName).ProjectItems;
-
             var exists = this.HasProjectItem(absolutePath, fileName);
 
-            var combinedPath = Path.Combine(absolutePath, fileName);
+            if (exists)
+                return;
 
-            if (!exists)
+            if (this.linkGeneratingFilesToTemplatePlaceholder)
             {
-                projectItems.AddFromFile(combinedPath);
+                LinkFileToTemplatePlaceHolder(projectItems, absolutePath, fileName);
+                return;
             }
+            
+            var combinedPath = Path.Combine(absolutePath, fileName);
+            projectItems.AddFromFile(combinedPath);
+            this.logger.Information("File {0} link to {1} project item", combinedPath, projectName);
         }
 
         /// <summary>
@@ -795,6 +964,44 @@
             var exists = this.dte.Solution.FindProjectItem(combinedPath) != null;
             return exists;
         }
+
+        /// <summary>
+        /// Link file to exist template or template placeHolder in different project or directory.
+        /// </summary>
+        /// <param name="projectItems">Items of project to add file and template placeholder</param>
+        /// <param name="absolutePath">Absolute path of file.</param>
+        /// <param name="fileName">Filename with extension.</param>
+        /// <returns></returns>
+        private void LinkFileToTemplatePlaceHolder(ProjectItems projectItems, string absolutePath, string fileName)
+        {
+            var samePath = string.Equals(this.GetTemplateFileProjectDirectoryPath(), absolutePath, StringComparison.OrdinalIgnoreCase);
+            var templateName = GetTemplatePlaceholderName(this.host.TemplateFile);
+            var templatePath = samePath ? this.host.TemplateFile : Path.Combine(absolutePath, templateName);
+            var templateItem = this.dte.Solution.FindProjectItem(templatePath);
+            if (templateItem == null)
+            {
+                if (!File.Exists(templatePath))
+                    File.Create(templatePath).Dispose();
+
+                templateItem = projectItems.AddFromFile(templatePath);
+                this.logger.Information("Template placeHolder project item {0} created", templatePath);
+            }
+
+            var combinedPath = Path.Combine(absolutePath, fileName);
+            templateItem.ProjectItems.AddFromFile(combinedPath);
+            this.logger.Information("File {0} link to {1} template item", combinedPath, templatePath);
+        }
+
+        /// <summary>
+        /// Generate new template placeholder name
+        /// </summary>
+        /// <param name="fileName">Template file name with extension.</param>
+        /// <returns></returns>
+        private string GetTemplatePlaceholderName(string fileName)
+		{
+			return Path.GetFileName(Path.ChangeExtension(fileName, this.emptyTemplatePlaceHolderExtention));
+		}
+
 
         /// <summary>
         /// Remove Project item from the Solution.
@@ -821,6 +1028,9 @@
         /// <param name="value">Value as <see cref="object"/>.</param>
         private void SetPropertyValue(ProjectItem projectItem, string propertyName, object value)
         {
+
+            this.logger.Information("property {0} exists", propertyName);
+
             var property = projectItem.Properties.Item(propertyName);
 
             if (property != null)
@@ -830,7 +1040,7 @@
             }
         }
     }
-    
+
     /// <summary>
     /// Properties for project item
     /// </summary>
@@ -937,7 +1147,7 @@
     }
 
     /// <summary>
-    /// Info for a generated file.
+    /// Info for a text generated file.
     /// </summary>
     public class FileToGenerate
     {
@@ -950,10 +1160,25 @@
         public Dictionary<string, object> Properties { get; set; }
 
         [JsonIgnore]
-        public string Content { get; set; }
-
-        [JsonIgnore]
         public string AbsolutePath { get; set; }
+    }
+
+    /// <summary>
+    /// Info for a binary generated file.
+    /// </summary>
+    public class TextFileToGenerate : FileToGenerate 
+    {
+        [JsonIgnore]
+        public string Content { get; set; }
+    }
+
+    /// <summary>
+    /// Info for a binary generated file.
+    /// </summary>
+    public class BinaryFileToGenerate : FileToGenerate 
+    {
+        [JsonIgnore]
+        public byte[] BinaryContent { get; set; }
     }
 
     /// <summary>
@@ -1013,7 +1238,71 @@
             outputWindow.ActivePane.OutputString(output);
             outputWindow.ActivePane.OutputString("\n");
         }
-    } 
+    }
+
+    /// <summary>
+    /// Options for configure T4FileManager in one place
+    /// </summary>
+    public class T4FileManagerOptions
+    {
+        /// <summary>
+        /// Switch to write log of generation to main output file.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        public bool IsLogToMainOutputFileEnabled { get; set; } = false;
+        /// <summary>
+        /// Allow overwriting of files if it has already been generated.
+        /// </summary>
+        /// <value>Default value is true.</value>
+        public bool CanOverwriteExistingFile { get; set; } = true;
+        /// <summary>
+        /// Automatic indentation of the code.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        public bool IsAutoIndentEnabled { get; set; } = false;
+        
+        /// <summary>
+        /// Enable Placeholder-Content for main output file to avoiding generation of empty .cs file 
+        /// and ignoring of the output extension directive in .net core projects.
+        /// </summary>
+        /// <value>Default value is true.</value>
+        public bool IsNetCorePlaceholderContentEnabled { get; set; } = true;
+
+        /// <summary>
+        /// Automatic indentation of the code with ReSharper.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        public bool IsAutoCleanUpWithResharperEnabled { get; set; } = false;
+        /// <summary>
+        /// Encoding of text file.
+        /// </summary>
+        /// <value>Default value is UTF8 with BOM.</value>
+        public Encoding TextFileEncoding { get; set; } = Encoding.UTF8;
+
+        /// <summary>
+        /// Link generating files to template placeholder in solution.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        public bool LinkGeneratingFilesToTemplatePlaceholder { get; set; } = false;
+
+        /// <summary>
+        /// Link info.json file to solution.
+        /// </summary>
+        /// <value>Default value is false.</value>
+        public bool LinkJsonFileToSolution { get; set; } = false;
+        
+        /// <summary>
+        /// Empty template placeholder extention.
+        /// </summary>
+        /// <value>Default value is .txt4.</value>
+        public string EmptyTemplatePlaceHolderExtention { get; set; } = ".txt4";
+
+        /// <summary>
+        /// Set default .txt extention to main output file.
+        /// </summary>
+        /// <value>Default value is true</value>
+        public bool SetDefaultExtention { get; set; } = true;
+    }
 
     /// <summary>
     /// For backward compatibility scenarios only
@@ -1021,9 +1310,9 @@
     public class TemplateFileManager : T4FileManager
     {
         public TemplateFileManager(GeneratedTextTransformation textTransformation)
-        : base(textTransformation.GenerationEnvironment, textTransformation.Host) {}
+        : base(textTransformation.GenerationEnvironment, textTransformation.Host, new T4FileManagerOptions()) {}
 
         public TemplateFileManager(StringBuilder textTransformation, ITextTemplatingEngineHost host)
-        : base (textTransformation, host) {}
+        : base (textTransformation, host, new T4FileManagerOptions()) {}
     }
 #>
