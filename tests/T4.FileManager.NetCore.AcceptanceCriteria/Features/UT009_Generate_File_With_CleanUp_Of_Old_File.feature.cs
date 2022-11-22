@@ -27,7 +27,7 @@ namespace T4.FileManager.NetCore.AcceptanceCriteria.Features
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-        private string[] _featureTags = new string[] {
+        private static string[] featureTags = new string[] {
                 "db-8"};
         
 #line 1 "UT009_Generate_File_With_CleanUp_Of_Old_File.feature"
@@ -38,8 +38,7 @@ namespace T4.FileManager.NetCore.AcceptanceCriteria.Features
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "UT009 Generate File with cleanup old File", "\tAs a developer\r\n\tI can generate code with the T4.FileManager without taking care" +
-                    " of old generated files", ProgrammingLanguage.CSharp, new string[] {
-                        "db-8"});
+                    " of old generated files", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -51,28 +50,28 @@ namespace T4.FileManager.NetCore.AcceptanceCriteria.Features
         }
         
         [NUnit.Framework.SetUpAttribute()]
-        public virtual void TestInitialize()
+        public void TestInitialize()
         {
         }
         
         [NUnit.Framework.TearDownAttribute()]
-        public virtual void TestTearDown()
+        public void TestTearDown()
         {
             testRunner.OnScenarioEnd();
         }
         
-        public virtual void ScenarioInitialize(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
+        public void ScenarioInitialize(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
         {
             testRunner.OnScenarioInitialize(scenarioInfo);
             testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<NUnit.Framework.TestContext>(NUnit.Framework.TestContext.CurrentContext);
         }
         
-        public virtual void ScenarioStart()
+        public void ScenarioStart()
         {
             testRunner.OnScenarioStart();
         }
         
-        public virtual void ScenarioCleanup()
+        public void ScenarioCleanup()
         {
             testRunner.CollectScenarioErrors();
         }
@@ -111,36 +110,26 @@ fileManager.Process();
 #line 33
  testRunner.When("I run the script", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                         "File"});
-            table10.AddRow(new string[] {
+            table11.AddRow(new string[] {
                         "TestOldFilesCleanUp.g.cs"});
 #line 34
- testRunner.Then("the following files are generated:", ((string)(null)), table10, "Then ");
+ testRunner.Then("the following files are generated:", ((string)(null)), table11, "Then ");
 #line hidden
         }
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Generate files with clean up of old files (based on *.info.json)")]
-        public virtual void GenerateFilesWithCleanUpOfOldFilesBasedOn_Info_Json()
+        public void GenerateFilesWithCleanUpOfOldFilesBasedOn_Info_Json()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Generate files with clean up of old files (based on *.info.json)", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Generate files with clean up of old files (based on *.info.json)", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 38
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
             {
                 testRunner.SkipScenario();
             }
@@ -150,31 +139,31 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "From",
                             "To"});
-                table11.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "fileManager.StartNewFile(\"TestOldFilesCleanUp.g.cs\",\"\",\"\");",
                             "fileManager.StartNewFile(\"TestOldFilesCleanUpRenamed.g.cs\",\"\",\"\");"});
 #line 39
- testRunner.Given("I change the line", ((string)(null)), table11, "Given ");
+ testRunner.Given("I change the line", ((string)(null)), table12, "Given ");
 #line hidden
 #line 42
  testRunner.When("I run the script", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
-                            "File"});
-                table12.AddRow(new string[] {
-                            "TestOldFilesCleanUp.g.cs"});
-#line 43
- testRunner.Then("the following files are cleaned up:", ((string)(null)), table12, "Then ");
-#line hidden
                 TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "File"});
                 table13.AddRow(new string[] {
+                            "TestOldFilesCleanUp.g.cs"});
+#line 43
+ testRunner.Then("the following files are cleaned up:", ((string)(null)), table13, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                            "File"});
+                table14.AddRow(new string[] {
                             "TestOldFilesCleanUpRenamed.g.cs"});
 #line 46
- testRunner.And("the following files are generated:", ((string)(null)), table13, "And ");
+ testRunner.And("the following files are generated:", ((string)(null)), table14, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

@@ -27,7 +27,7 @@ namespace T4.FileManager.NetCore.AcceptanceCriteria.Features
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-        private string[] _featureTags = new string[] {
+        private static string[] featureTags = new string[] {
                 "db-127"};
         
 #line 1 "UT013_Generate_File_With_Overwrite.feature"
@@ -38,8 +38,7 @@ namespace T4.FileManager.NetCore.AcceptanceCriteria.Features
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "UT013 Generate File with overwrite", "\tAs a developer\r\n\tI can change the behaviour of supress changes to overwrite exis" +
-                    "ting files", ProgrammingLanguage.CSharp, new string[] {
-                        "db-127"});
+                    "ting files", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -51,28 +50,28 @@ namespace T4.FileManager.NetCore.AcceptanceCriteria.Features
         }
         
         [NUnit.Framework.SetUpAttribute()]
-        public virtual void TestInitialize()
+        public void TestInitialize()
         {
         }
         
         [NUnit.Framework.TearDownAttribute()]
-        public virtual void TestTearDown()
+        public void TestTearDown()
         {
             testRunner.OnScenarioEnd();
         }
         
-        public virtual void ScenarioInitialize(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
+        public void ScenarioInitialize(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
         {
             testRunner.OnScenarioInitialize(scenarioInfo);
             testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<NUnit.Framework.TestContext>(NUnit.Framework.TestContext.CurrentContext);
         }
         
-        public virtual void ScenarioStart()
+        public void ScenarioStart()
         {
             testRunner.OnScenarioStart();
         }
         
-        public virtual void ScenarioCleanup()
+        public void ScenarioCleanup()
         {
             testRunner.CollectScenarioErrors();
         }
@@ -114,25 +113,15 @@ fileManager.Process();
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Generate files with CanOverwriteExistingFile is set to true, files deleted")]
-        public virtual void GenerateFilesWithCanOverwriteExistingFileIsSetToTrueFilesDeleted()
+        public void GenerateFilesWithCanOverwriteExistingFileIsSetToTrueFilesDeleted()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Generate files with CanOverwriteExistingFile is set to true, files deleted", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Generate files with CanOverwriteExistingFile is set to true, files deleted", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 36
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
             {
                 testRunner.SkipScenario();
             }
@@ -145,50 +134,50 @@ this.FeatureBackground();
 #line 37
  testRunner.Given("I run the script", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
                             "File",
                             "Folder"});
-                table20.AddRow(new string[] {
+                table21.AddRow(new string[] {
                             "TestDelete.g.cs",
                             "TestOverwrite"});
 #line 38
- testRunner.And("the following files are generated:", ((string)(null)), table20, "And ");
+ testRunner.And("the following files are generated:", ((string)(null)), table21, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
                             "From",
                             "To"});
-                table21.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "T4FileManager.Create(this).DisableOverwriteExistingFile();",
                             "T4FileManager.Create(this);"});
-                table21.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "fileManager.StartNewFile(\"TestDelete.g.cs\",\"\",\"TestOverwrite\");",
                             "fileManager.StartNewFile(\"TestNoDelete3.g.cs\",\"\",\"TestOverwrite\");"});
-                table21.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "public class TestDelete",
                             "public class NewTestDeleteModel"});
 #line 41
- testRunner.And("I change the line", ((string)(null)), table21, "And ");
+ testRunner.And("I change the line", ((string)(null)), table22, "And ");
 #line hidden
 #line 46
  testRunner.When("I run the script", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
-                            "File",
-                            "Folder"});
-                table22.AddRow(new string[] {
-                            "TestNoDelete3.g.cs",
-                            "TestOverwrite"});
-#line 47
- testRunner.Then("the following files are generated:", ((string)(null)), table22, "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
                             "File",
                             "Folder"});
                 table23.AddRow(new string[] {
+                            "TestNoDelete3.g.cs",
+                            "TestOverwrite"});
+#line 47
+ testRunner.Then("the following files are generated:", ((string)(null)), table23, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+                            "File",
+                            "Folder"});
+                table24.AddRow(new string[] {
                             "TestDelete.g.cs",
                             "TestOverwrite"});
 #line 50
- testRunner.And("the following files are cleaned up:", ((string)(null)), table23, "And ");
+ testRunner.And("the following files are cleaned up:", ((string)(null)), table24, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

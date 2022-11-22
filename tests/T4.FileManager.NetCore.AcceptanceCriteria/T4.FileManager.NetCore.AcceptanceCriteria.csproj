@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FileDefaultEncoding.g.cs" />
     <Compile Remove="FileFormat.g.cs" />
     <Compile Remove="OrderDto.g.cs" />
     <Compile Remove="OrderDtoWithGlobal.g.cs" />
@@ -14,6 +15,7 @@
     <Compile Remove="PersonDtoWithGlobal.g.cs" />
     <Compile Remove="PersonDtoWithSA1633.g.cs" />
     <Compile Remove="PersonTxtDto.g.cs" />
+    <Compile Remove="ProjectItemsPersonDto.g.cs" />
     <Compile Remove="TestMissingFileExtension.cs" />
     <Compile Remove="TestOldFilesCleanUp.g.cs" />
     <Compile Remove="TestOldFilesCleanUpRenamed.g.cs" />
@@ -30,18 +32,29 @@
     <Compile Remove="TestSubfolder\OrderMDto.g.cs" />
     <Compile Remove="TestSubfolder\PersonDto.g.cs" />
     <Compile Remove="TestSubfolder\PersonMDto.g.cs" />
+    <Compile Remove="TestUTF16Encoding.g.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ProjectItemsTest.info.json" />
+    <None Remove="ProjectItemsTest.tt" />
+    <None Remove="ProjectItemsTest.txt" />
     <None Remove="ProjectTestFP.info.json" />
     <None Remove="ProjectTestFP.tt" />
     <None Remove="ProjectTestFP.txt" />
+    <None Remove="TesBigEndianEncoding.g.sql" />
     <None Remove="Test.info.json" />
     <None Remove="Test.tt" />
     <None Remove="Test.txt" />
     <None Remove="TestAutoIndent.info.json" />
     <None Remove="TestAutoIndent.tt" />
     <None Remove="TestAutoIndent.txt" />
+    <None Remove="TestBigEndianEncoding.info.json" />
+    <None Remove="TestBigEndianEncoding.tt" />
+    <None Remove="TestBigEndianEncoding.txt" />
+    <None Remove="TestDefaultEncoding.info.json" />
+    <None Remove="TestDefaultEncoding.tt" />
+    <None Remove="TestDefaultEncoding.txt" />
     <None Remove="TestDelete.info.json" />
     <None Remove="TestDelete.tt" />
     <None Remove="TestDelete.txt" />
@@ -72,6 +85,9 @@
     <None Remove="TestSubfolderMoving.info.json" />
     <None Remove="TestSubfolderMoving.tt" />
     <None Remove="TestSubfolderMoving.txt" />
+    <None Remove="TestUTF16Encoding.info.json" />
+    <None Remove="TestUTF16Encoding.tt" />
+    <None Remove="TestUTF16Encoding.txt" />
     <None Remove="TestWithCustomLog.info.json" />
     <None Remove="TestWithCustomLog.tt" />
     <None Remove="TestWithCustomLog.txt" />
@@ -81,13 +97,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EnvDTE" Version="16.7.30508.193" />
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="microsoft.net.test.sdk" Version="16.8.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.0" />
-    <PackageReference Include="SpecFlow.NUnit" Version="3.9.40" />
+    <PackageReference Include="EnvDTE" Version="17.4.33103.184" />
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="microsoft.net.test.sdk" Version="17.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
-    <PackageReference Include="system.drawing.common" Version="5.0.0" />
+    <PackageReference Include="system.drawing.common" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

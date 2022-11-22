@@ -139,3 +139,145 @@ fileManager.Process();
 		    }
 		}
 		"""
+
+
+Scenario: Generate file with default encoding
+Given the script "TestDefaultEncoding.tt" with the following content
+		"""
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".txt" #>
+
+<#@ include file="$(TargetDir)\T4.FileManager.VisualStudio.ttinclude" #>
+
+<#
+var files = new string[] { "FileDefaultEncoding" };
+var fileManager = T4FileManager.Create(this);
+foreach(var itm in files)
+{
+	fileManager.StartNewFile(itm + ".g.cs", "","");
+#>
+namespace Test
+{
+  public partial class <#= itm #>
+  {
+     public int Id {get; set;}
+  }
+}
+<#
+}
+fileManager.Process();
+#>
+		"""
+	When I run the script
+    Then the file "FileDefaultEncoding.g.cs" is encoded in "UTF-8"
+
+
+Scenario: Generate file with Unicode encoding
+Given the script "TestUTF16Encoding.tt" with the following content
+		"""
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".txt" #>
+
+<#@ include file="$(TargetDir)\T4.FileManager.VisualStudio.ttinclude" #>
+
+<#
+var files = new string[] { "TestUTF16Encoding" };
+var fileManager = T4FileManager.Create(this).EnableLog().SetOutputFileEncoding(Encoding.Unicode); // <=== Set encoding for output file
+foreach(var itm in files)
+{
+	fileManager.StartNewFile(itm + ".g.cs", "","");
+#>
+namespace Test
+{
+  public partial class <#= itm #>
+  {
+     public int Id {get; set;}
+  }
+}
+<#
+}
+fileManager.Process();
+#>
+		"""
+	When I run the script
+    Then the file "TestUTF16Encoding.g.cs" is encoded in "UTF-16"
+
+
+Scenario: Generate file with simular UCS-2 encoding
+    Given the script "TestBigEndianEncoding.tt" with the following content
+		"""
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".txt" #>
+
+<#@ include file="$(TargetDir)\T4.FileManager.VisualStudio.ttinclude" #>
+
+<#
+var files = new string[] { "TesBigEndianEncoding" };
+var fileManager = T4FileManager.Create(this).EnableLog().SetOutputFileEncoding(Encoding.BigEndianUnicode);
+foreach(var itm in files)
+{
+	fileManager.StartNewFile(itm + ".g.sql", "","");
+#>
+SELECT 'öäüé' <#=itm#>
+<#
+}
+fileManager.Process();
+#>
+		"""
+	When I run the script
+    Then the file "TesBigEndianEncoding.g.sql" is encoded in "UTF-16BE"
+
+
+Scenario: Using filemanager in solutions with setup project (vdproj)
+
+Setup project needs the extension Microsoft Visual Studio Installer Projects installed. See issue #17
+
+    Given a solution with setup project
+	And the script "ProjectItemsTest.tt" with the following content
+		"""
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".txt" #>
+
+<#@ include file="$(TargetDir)\T4.FileManager.VisualStudio.ttinclude" #>
+
+<#
+var files = new string[] { "ProjectItemsPersonDto" };
+var fileManager = T4FileManager.Create(this).EnableLog();
+
+foreach(var itm in files)
+{
+	fileManager.StartNewFile(itm + ".g.cs", "","");
+#>
+namespace Test
+{
+	public class <#= itm #>
+	{
+	}
+}
+<#
+}
+
+fileManager.Process();
+#>
+		"""
+	When I run the script
+	Then the following files are generated:
+		| File           |
+		| ProjectItemsPersonDto.g.cs |
+	And the setup projects ProjectItems property is null

@@ -89,6 +89,12 @@
         private bool isAutoCleanUpWithResharperEnabled;
 
         /// <summary>
+	    /// Defines Encoding format for generated output file. (Default UTF8)
+	    /// </summary>
+	    /// <returns></returns>
+	    public System.Text.Encoding Encoding = System.Text.Encoding.UTF8;
+
+        /// <summary>
         /// Encoding of text file.
         /// </summary>
         /// <value>Default value is UTF8 with BOM.</value>
@@ -208,6 +214,13 @@
         {
             this.logger.Information("CanOverwriteExistingFile is disabled (false)");
             this.canOverwriteExistingFile = false;
+            return this;
+        }
+
+        public T4FileManager SetOutputFileEncoding(System.Text.Encoding encoding)
+        {
+            this.logger.Information("Encoding is set to " + encoding.HeaderName);
+            this.Encoding = encoding;
             return this;
         }
 
@@ -553,7 +566,7 @@
 
             if ((canOverwriteExistingFile && this.canOverwriteExistingFile) || !File.Exists(filePath))
             {
-                File.WriteAllText(Path.Combine(textFileToGenerate.AbsolutePath, textFileToGenerate.Filename), textFileToGenerate.Content, textFileEncoding);
+                File.WriteAllText(Path.Combine(textFileToGenerate.AbsolutePath, textFileToGenerate.Filename), textFileToGenerate.Content, this.Encoding);
                 this.logger.Information("Text file {0} written", textFileToGenerate.Filename);
             }
         }
@@ -823,7 +836,10 @@
 
             for (int i = 0; i < list.Count; i++)
             {
-                list.AddRange(list[i].ProjectItems.Cast<ProjectItem>().Select(x => x.SubProject).OfType<Project>());
+                if (list[i].ProjectItems != null)
+                {
+                    list.AddRange(list[i].ProjectItems.Cast<ProjectItem>().Select(x => x.SubProject).OfType<Project>());
+                }
             }
 
             foreach (Project project in list)
