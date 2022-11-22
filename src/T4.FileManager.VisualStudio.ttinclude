@@ -92,13 +92,7 @@
 	    /// Defines Encoding format for generated output file. (Default UTF8)
 	    /// </summary>
 	    /// <returns></returns>
-	    public System.Text.Encoding Encoding = System.Text.Encoding.UTF8;
-
-        /// <summary>
-        /// Encoding of text file.
-        /// </summary>
-        /// <value>Default value is UTF8 with BOM.</value>
-        private Encoding textFileEncoding;
+	    private System.Text.Encoding Encoding;
 
         /// <summary>
         /// Link generating files to template placeholder in solution.
@@ -158,7 +152,7 @@
             isAutoIndentEnabled = options.IsAutoIndentEnabled;
             isNetCorePlaceholderContentEnabled = options.IsNetCorePlaceholderContentEnabled;
             isAutoCleanUpWithResharperEnabled = options.IsAutoCleanUpWithResharperEnabled;
-            textFileEncoding = options.TextFileEncoding;
+            Encoding = options.Encoding;
             linkGeneratingFilesToTemplatePlaceholder = options.LinkGeneratingFilesToTemplatePlaceholder;
             linkJsonFileToSolution = options.LinkJsonFileToSolution;
             emptyTemplatePlaceHolderExtention = options.EmptyTemplatePlaceHolderExtention;
@@ -1293,7 +1287,7 @@
         /// Encoding of text file.
         /// </summary>
         /// <value>Default value is UTF8 with BOM.</value>
-        public Encoding TextFileEncoding { get; set; } = Encoding.UTF8;
+        public System.Text.Encoding Encoding { get; set; } = Encoding.UTF8;
 
         /// <summary>
         /// Link generating files to template placeholder in solution.
