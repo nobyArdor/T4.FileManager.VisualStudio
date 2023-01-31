@@ -1062,7 +1062,7 @@
         }
 
         public string CustomTool { get; set; }
-        public int? CopyToOutputDirectory { get; set; }
+        public uint? CopyToOutputDirectory { get; set; }
         public int? BuildAction { get; set; }
         public Dictionary<string, object> TemplateParameter { get; set; }
 
@@ -1118,9 +1118,9 @@
     /// </summary>
     public abstract class CopyToOutputDirectory
     {
-        public const int DoNotCopy = 0;
-        public const int CopyAlways = 1;
-        public const int CopyIfNewer = 2;
+        public const uint DoNotCopy = 0;
+        public const uint CopyAlways = 1;
+        public const uint CopyIfNewer = 2;
     }
 
     /// <summary>
