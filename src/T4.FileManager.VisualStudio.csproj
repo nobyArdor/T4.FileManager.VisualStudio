@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <NuspecFile>T4.FileManager.VisualStudio.nuspec</NuspecFile>
     <NuspecProperties>
-       Version=1.0.2
+       Version=1.0.3
     </NuspecProperties>
   </PropertyGroup>
 

@@ -22,8 +22,7 @@
     <releaseNotes>
       see https://databinding-gmbh.github.io/T4.FileManager.VisualStudio/12-Change-log/
     </releaseNotes>
-    <!--    
-    -->
+    <developmentDependency>true</developmentDependency>
     <contentFiles>
       <files include="any/any/tti/**/*.ttinclude" buildAction="Content" copyToOutput="true" />
     </contentFiles>
@@ -33,15 +32,9 @@
     <file src="..\README.md" target="docs\" />
     
     <file src="T4.FileManager.VisualStudio.ttinclude" target="contentFiles\any\any\tti" />
-    <!--    
     <file src="T4.FileManager.VisualStudio.ttinclude" target="content\tti" />
-    -->
-    
     <file src="T4.FileManager.VisualStudio19.ttinclude" target="contentFiles\any\any\tti" />
-  
-    <!--  
     <file src="T4.FileManager.VisualStudio19.ttinclude" target="content\tti" />
-  -->
     <file src="images\logo-t4-file-manager.png" target="" />
     <file src="LICENSE.txt" target="" />
   </files>
