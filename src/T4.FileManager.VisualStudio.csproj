@@ -3,11 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <NuspecFile>FileManager.FullFramework.nuspec</NuspecFile>
+    <NuspecFile>T4.FileManager.VisualStudio.nuspec</NuspecFile>
+    <NuspecProperties>
+       Version=1.0.3
+    </NuspecProperties>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="TextTemplate1.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

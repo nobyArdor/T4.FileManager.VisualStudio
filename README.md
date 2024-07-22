@@ -2,6 +2,8 @@
   <img height="150" src="https://raw.githubusercontent.com/databinding-gmbh/T4.FileManager.VisualStudio/master/src/images/logo-t4-file-manager.png" alt="T4 FileManager"/>
 </p>
 
+forked from (https://github.com/databinding-gmbh/T4.FileManager.VisualStudio/)
+
 # T4.FileManager.VisualStudio
 
 [![Build Status](https://dev.azure.com/databinding/Building%20Blocks/_apis/build/status/databinding-gmbh.T4.FileManager.VisualStudio?branchName=master)](https://dev.azure.com/databinding/Building%20Blocks/_build/latest?definitionId=39&branchName=master) [![Nuget](https://img.shields.io/nuget/v/T4.FileManager.VisualStudio)](https://www.nuget.org/packages/T4.FileManager.VisualStudio/) [![Nuget](https://img.shields.io/nuget/dt/T4.FileManager.VisualStudio)](https://www.nuget.org/packages/T4.FileManager.VisualStudio/)
@@ -99,3 +101,13 @@ Link to old T4.TemplateFileManager: https://github.com/renegadexx/T4.Helper.
 - [tangible T4 Editor](https://t4-editor.tangible-engineering.com/T4-Editor-Visual-T4-Editing.html)
 - [T4Editor](https://github.com/Tim-Maes/T4Editor)
 - [devart T4 Editor](https://www.devart.com/t4-editor/)
+- [T4Language](https://github.com/bricelam/T4Language)
+
+## Fork difference
+- Moved configs options to separate T4FileManagerOptions class
+- Add option TextFileEncoding to set output text file encoding
+- Add option LinkGeneratingFilesToTemplatePlaceholder to link generating files to template placeholder in solution
+- Add option LinkJsonFileToSolution to link info.json file in solution tree
+- Add option EmptyTemplatePlaceHolderExtention to set empty template placeholder file extention
+- Add option SetDefaultExtention - switch when need set default .txt extention to main output file
+- Add public method CreateResourceFile - to add binary embedded resouce file without cleanup, header block and other code routines and link the file to solution tree
