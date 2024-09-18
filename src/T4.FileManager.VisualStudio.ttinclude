@@ -1164,7 +1164,7 @@
     }
 
         /// <summary>
-    /// Info for a binary generated file.
+    /// Info for a text generated file.
     /// </summary>
     public class TextFileToGenerate : FileToGenerate 
     {
